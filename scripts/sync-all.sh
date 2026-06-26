@@ -22,6 +22,7 @@ node scripts/convert-qx-to-loon.js \
   --repo "$REPO" \
   --base "$RAW_BASE" \
   --tag "瓜子影视净化" \
+  --icon "${RAW_BASE}/plugins/tilingsales/assets/icon.jpg" \
   --script "TilingSales_getNav.js=${RAW_BASE}/plugins/tilingsales/js/TilingSales_getNav.js"
 
 curl -fsSL -o plugins/migu/upstream/migu_vip_share.snippet https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/migu_vip_share.snippet
@@ -32,6 +33,7 @@ node scripts/convert-qx-to-loon.js \
   --repo "$REPO" \
   --base "$RAW_BASE" \
   --tag "咪咕视频解锁会员" \
+  --icon "${RAW_BASE}/plugins/migu/assets/icon.jpg" \
   --script "migu_vip.js=${RAW_BASE}/plugins/migu/js/migu_vip.js"
 
 curl -fsSL -o plugins/mgtv/upstream/mgtv_vip.snippet https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/mgtv_vip.snippet
@@ -42,4 +44,5 @@ node scripts/convert-qx-to-loon.js \
   --repo "$REPO" \
   --base "$RAW_BASE" \
   --tag "芒果tv解锁会员" \
+  --icon "${RAW_BASE}/plugins/mgtv/assets/icon.jpg" \
   --script "mgtv_vip.js=${RAW_BASE}/plugins/mgtv/js/mgtv_vip.js"

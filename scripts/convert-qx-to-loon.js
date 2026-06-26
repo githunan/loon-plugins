@@ -17,7 +17,8 @@ const source = required('source');
 const outputFile = required('output');
 const repo = required('repo');
 const scriptMap = parseScriptMap(options.script || '');
-const tagOverride = options.tag || '';
+const tagOverride = options.tag || ''; 
+const iconUrl = options.icon || '';
 
 function required(key) {
   if (!options[key]) throw new Error(`Missing --${key}`);
@@ -72,13 +73,13 @@ for (const raw of lines) {
 
   const responseScriptMatch = line.match(/^(.*?)\s+url\s+script-response-body\s+(\S+)\s*$/);
   if (responseScriptMatch) {
-    scripts.push(`http-response ${responseScriptMatch[1]} script-path=${convertScriptUrl(responseScriptMatch[2])}, requires-body=true, timeout=60, tag=${tag()}`);
+    scripts.push(`http-response ${responseScriptMatch[1]} script-path=${convertScriptUrl(responseScriptMatch[2])}, requires-body=true, timeout=60, tag=${tag()}${scriptIcon()}`);
     continue;
   }
 
   const requestHeaderScriptMatch = line.match(/^(.*?)\s+url\s+script-request-header\s+(\S+)\s*$/);
   if (requestHeaderScriptMatch) {
-    scripts.push(`http-request ${requestHeaderScriptMatch[1]} script-path=${convertScriptUrl(requestHeaderScriptMatch[2])}, requires-body=false, timeout=60, tag=${tag()}`);
+    scripts.push(`http-request ${requestHeaderScriptMatch[1]} script-path=${convertScriptUrl(requestHeaderScriptMatch[2])}, requires-body=false, timeout=60, tag=${tag()}${scriptIcon()}`);
     continue;
   }
 }
@@ -93,6 +94,7 @@ const sections = [
   author,
   update,
   `#!homepage=https://github.com/${repo}`,
+  ...(iconUrl ? [`#!icon=${iconUrl}`] : []),
   '',
 ]; 
 if (rewrites.length) sections.push('[Rewrite]', ...rewrites, '');
@@ -112,4 +114,8 @@ function normalizeMeta(value) {
 function tag() {
   if (tagOverride) return tagOverride;
   return name.replace(/^#!name=/, '');
+}
+
+function scriptIcon() {
+  return iconUrl ? `, img-url=${iconUrl}` : '';
 }
