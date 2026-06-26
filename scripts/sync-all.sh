@@ -7,7 +7,8 @@ RAW_BASE="https://raw.githubusercontent.com/${REPO}/main"
 mkdir -p \
   plugins/wps-office/app/wps \
   plugins/tilingsales/upstream plugins/tilingsales/js \
-  plugins/migu/upstream plugins/migu/js
+  plugins/migu/upstream plugins/migu/js \
+  plugins/mgtv/upstream plugins/mgtv/js
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -32,3 +33,13 @@ node scripts/convert-qx-to-loon.js \
   --base "$RAW_BASE" \
   --tag "咪咕视频解锁会员" \
   --script "migu_vip.js=${RAW_BASE}/plugins/migu/js/migu_vip.js"
+
+curl -fsSL -o plugins/mgtv/upstream/mgtv_vip.snippet https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/mgtv_vip.snippet
+curl -fsSL -o plugins/mgtv/js/mgtv_vip.js https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/mgtv_vip.js
+node scripts/convert-qx-to-loon.js \
+  --source plugins/mgtv/upstream/mgtv_vip.snippet \
+  --output plugins/mgtv/mgtv_vip.plugin \
+  --repo "$REPO" \
+  --base "$RAW_BASE" \
+  --tag "芒果tv解锁会员" \
+  --script "mgtv_vip.js=${RAW_BASE}/plugins/mgtv/js/mgtv_vip.js"
