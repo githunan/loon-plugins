@@ -1,0 +1,32 @@
+name: Sync plugins
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync upstream files and regenerate plugins
+        run: bash scripts/sync-all.sh
+
+      - name: Commit changes
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No upstream changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins scripts
+          git commit -m "chore: sync plugins"
+          git push
