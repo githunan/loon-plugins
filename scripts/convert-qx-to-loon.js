@@ -8,7 +8,7 @@ for (let i = 0; i < args.length; i += 2) {
   const key = args[i];
   const value = args[i + 1];
   if (!key || !key.startsWith('--') || value === undefined) {
-    throw new Error('Usage: node scripts/convert-qx-to-loon.js --source <file> --output <file> --repo <owner/repo> --base <raw-base> --script <name=url>');
+    throw new Error('Usage: node scripts/convert-qx-to-loon.js --source <file> --output <file> --repo <owner/repo> --base <raw-base> --script <name=url> [--tag <name>]');
   }
   options[key.slice(2)] = value;
 }
@@ -16,8 +16,8 @@ for (let i = 0; i < args.length; i += 2) {
 const source = required('source');
 const outputFile = required('output');
 const repo = required('repo');
-const base = required('base').replace(/\/$/, '');
 const scriptMap = parseScriptMap(options.script || '');
+const tagOverride = options.tag || '';
 
 function required(key) {
   if (!options[key]) throw new Error(`Missing --${key}`);
@@ -70,9 +70,15 @@ for (const raw of lines) {
     continue;
   }
 
-  const scriptMatch = line.match(/^(.*?)\s+url\s+script-response-body\s+(\S+)\s*$/);
-  if (scriptMatch) {
-    scripts.push(`http-response ${scriptMatch[1]} script-path=${convertScriptUrl(scriptMatch[2])}, requires-body=true, timeout=60, tag=瓜子影视净化`);
+  const responseScriptMatch = line.match(/^(.*?)\s+url\s+script-response-body\s+(\S+)\s*$/);
+  if (responseScriptMatch) {
+    scripts.push(`http-response ${responseScriptMatch[1]} script-path=${convertScriptUrl(responseScriptMatch[2])}, requires-body=true, timeout=60, tag=${tag()}`);
+    continue;
+  }
+
+  const requestHeaderScriptMatch = line.match(/^(.*?)\s+url\s+script-request-header\s+(\S+)\s*$/);
+  if (requestHeaderScriptMatch) {
+    scripts.push(`http-request ${requestHeaderScriptMatch[1]} script-path=${convertScriptUrl(requestHeaderScriptMatch[2])}, requires-body=false, timeout=60, tag=${tag()}`);
     continue;
   }
 }
@@ -81,23 +87,19 @@ const name = normalizeMeta(meta.find((x) => x.startsWith('#!name')) || '#!name=C
 const author = normalizeMeta(meta.find((x) => x.startsWith('#!author')) || '#!author=unknown');
 const update = normalizeMeta(meta.find((x) => x.startsWith('#!update')) || '');
 
-const output = [
+const sections = [
   name,
   '#!desc=由 Quantumult X snippet 自动转换为 Loon 插件，自动同步上游更新。',
   author,
   update,
   `#!homepage=https://github.com/${repo}`,
   '',
-  '[Rewrite]',
-  ...rewrites,
-  '',
-  '[Script]',
-  ...scripts,
-  '',
-  '[MITM]',
-  `hostname = ${hostname}`,
-  '',
-].join('\n');
+]; 
+if (rewrites.length) sections.push('[Rewrite]', ...rewrites, '');
+if (scripts.length) sections.push('[Script]', ...scripts, '');
+if (hostname) sections.push('[MITM]', `hostname = ${hostname}`, '');
+
+const output = sections.join('\n');
 
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });
 fs.writeFileSync(outputFile, output);
@@ -105,4 +107,9 @@ console.log(`Generated ${outputFile}: ${rewrites.length} rewrite rules, ${script
 
 function normalizeMeta(value) {
   return value.replace(/\s*=\s*/, '=');
+}
+
+function tag() {
+  if (tagOverride) return tagOverride;
+  return name.replace(/^#!name=/, '');
 }

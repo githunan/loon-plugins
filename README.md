@@ -16,6 +16,12 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/wps-office/
 https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/TilingSales_ad_remove.plugin
 ```
 
+### 咪咕视频解锁会员
+
+```text
+https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/migu/migu_vip_share.plugin
+```
+
 ## 自动同步
 
 `.github/workflows/sync-plugins.yml` 每天自动同步上游脚本和规则。
@@ -24,5 +30,6 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales
 
 - WPS Office：`MaYIHEI/paperclip`、`MaYIHEI/pin`
 - 瓜子影视净化：`ZenmoFeiShi/Qx`
+- 咪咕视频解锁会员：`ZenmoFeiShi/Qx`
 
 如果上游更新，仓库会自动提交变化；Loon 里添加的 raw 链接保持不变。

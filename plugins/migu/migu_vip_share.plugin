@@ -1,0 +1,12 @@
+#!name=咪咕视频解锁会员
+#!desc=由 Quantumult X snippet 自动转换为 Loon 插件，自动同步上游更新。
+#!author=怎么肥事
+#!update=2026-05-14
+#!homepage=https://github.com/githunan/loon-plugins
+
+[Script]
+http-request ^https?:\/\/(play|play-pre|v|v[0-9]?-sc|vmesh|app-sc|vms-sc|display(-sc)?|common-sc|program-sc|d[0-9]-sc|fs-sc|fsdv-sc|mp-user|recommend-dy|chat|chat-wx|public-deliver[0-9]?|public-operbiz[0-9]?|public-img)\.miguvideo\.com\/.+ script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/migu/js/migu_vip.js, requires-body=false, timeout=60, tag=咪咕视频解锁会员
+http-request ^https?:\/\/(passport|uem|push|jadeite|jadeiteapp|hound|feedback|rcsdk)\.migu\.cn\/.+ script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/migu/js/migu_vip.js, requires-body=false, timeout=60, tag=咪咕视频解锁会员
+
+[MITM]
+hostname = *.miguvideo.com, *.migu.cn
