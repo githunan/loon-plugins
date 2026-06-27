@@ -1,0 +1,13 @@
+#!name=追觅每日签到
+#!desc=追觅商城每日签到，得积分 / 成长值，支持连签奖励。首次使用需打开追觅 APP 商城或我的页抓取 Cookie。
+#!author=MaYIHEI / mirrored by githunan
+#!homepage=https://github.com/githunan/loon-plugins
+#!icon=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/dreame/assets/dreame.png
+
+[MITM]
+hostname = cn-wxmall.dreame.tech
+
+[Script]
+http-request ^https:\/\/cn-wxmall\.dreame\.tech\/main\/my\/info tag=追觅 Cookie, script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/dreame/dreame.js, requires-body=true, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/dreame/assets/dreame.png
+
+cron "33 8 * * *" script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/dreame/dreame.js, tag=追觅签到, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/dreame/assets/dreame.png, enable=true

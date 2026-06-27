@@ -8,7 +8,8 @@ mkdir -p \
   plugins/wps-office/app/wps \
   plugins/tilingsales/upstream plugins/tilingsales/js \
   plugins/migu/upstream plugins/migu/js \
-  plugins/mgtv/upstream plugins/mgtv/js
+  plugins/mgtv/upstream plugins/mgtv/js \
+  plugins/dreame/assets
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -46,3 +47,6 @@ node scripts/convert-qx-to-loon.js \
   --tag "芒果tv解锁会员" \
   --icon "${RAW_BASE}/plugins/mgtv/assets/icon.jpg" \
   --script "mgtv_vip.js=${RAW_BASE}/plugins/mgtv/js/mgtv_vip.js"
+
+curl -fsSL -o plugins/dreame/dreame.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/dreame/dreame.js
+curl -fsSL -o plugins/dreame/assets/dreame.png https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/dreame.png
