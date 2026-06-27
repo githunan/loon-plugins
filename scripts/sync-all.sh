@@ -10,7 +10,8 @@ mkdir -p \
   plugins/migu/upstream plugins/migu/js \
   plugins/mgtv/upstream plugins/mgtv/js \
   plugins/dreame/assets \
-  plugins/pingme/scripts plugins/pingme/assets
+  plugins/pingme/scripts plugins/pingme/assets \
+  plugins/wetalk/scripts plugins/wetalk/assets
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -55,3 +56,6 @@ curl -fsSL -o plugins/dreame/assets/dreame.png https://raw.githubusercontent.com
 curl -fsSL -o plugins/pingme/scripts/get_cookie.js https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/cookie/get_cookie.js
 curl -fsSL -o plugins/pingme/scripts/PingMeSignin.js https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PingMe/PingMeSignin.js
 curl -fsSL -o plugins/pingme/assets/PingMe.png https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/PingMe.png
+
+curl -fsSL -o plugins/wetalk/scripts/WeTalk.js https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/WeTalk.js
+curl -fsSL -o plugins/wetalk/assets/WeTalk.jpg https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f0/47/0f/f0470f52-953c-6d67-ad8e-20af53a3afa4/AppIcon-WeTalk-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/512x512bb.jpg
