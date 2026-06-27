@@ -1,0 +1,13 @@
+#!name=PingMe签到
+#!desc=支持获取签到参数和每日签到任务。首次使用需打开 PingMe APP 触发参数抓取。
+#!author=ZenMoFiShi / fmz200 / mirrored by githunan
+#!homepage=https://github.com/githunan/loon-plugins
+#!icon=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/assets/PingMe.png
+
+[MITM]
+hostname = api.pingmeapp.net
+
+[Script]
+http-request ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/scripts/get_cookie.js, timeout=60, tag=PingMe获取签到参数, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/assets/PingMe.png
+
+cron "30 8,20 * * *" script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/scripts/PingMeSignin.js, tag=PingMe签到, timeout=300, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/assets/PingMe.png, enable=true

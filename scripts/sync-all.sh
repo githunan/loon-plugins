@@ -9,7 +9,8 @@ mkdir -p \
   plugins/tilingsales/upstream plugins/tilingsales/js \
   plugins/migu/upstream plugins/migu/js \
   plugins/mgtv/upstream plugins/mgtv/js \
-  plugins/dreame/assets
+  plugins/dreame/assets \
+  plugins/pingme/scripts plugins/pingme/assets
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -50,3 +51,7 @@ node scripts/convert-qx-to-loon.js \
 
 curl -fsSL -o plugins/dreame/dreame.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/dreame/dreame.js
 curl -fsSL -o plugins/dreame/assets/dreame.png https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/dreame.png
+
+curl -fsSL -o plugins/pingme/scripts/get_cookie.js https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/cookie/get_cookie.js
+curl -fsSL -o plugins/pingme/scripts/PingMeSignin.js https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/PingMe/PingMeSignin.js
+curl -fsSL -o plugins/pingme/assets/PingMe.png https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/PingMe.png
