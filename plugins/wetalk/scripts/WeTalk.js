@@ -27,6 +27,55 @@ const IPHONE_MODELS = ['iPhone14,3','iPhone13,3','iPhone15,3','iPhone16,1','iPho
 const CFN_VERS = ['1410.0.3','1494.0.7','1568.100.1','1209.1','1474.0.4','1568.200.2'];
 const DARWIN_VERS = ['22.6.0','23.5.0','23.6.0','24.0.0','22.4.0'];
 
+const storage = {
+  get(key) {
+    if (typeof $prefs !== 'undefined' && $prefs && typeof $prefs.valueForKey === 'function') return $prefs.valueForKey(key);
+    if (typeof $persistentStore !== 'undefined' && $persistentStore && typeof $persistentStore.read === 'function') return $persistentStore.read(key);
+    return null;
+  },
+  set(key, value) {
+    if (typeof $prefs !== 'undefined' && $prefs && typeof $prefs.setValueForKey === 'function') return $prefs.setValueForKey(value, key);
+    if (typeof $persistentStore !== 'undefined' && $persistentStore && typeof $persistentStore.write === 'function') return $persistentStore.write(value, key);
+    return false;
+  }
+};
+
+function httpFetch(options) {
+  if (typeof $task !== 'undefined' && $task && typeof $task.fetch === 'function') {
+    return $task.fetch(options);
+  }
+  if (typeof $httpClient !== 'undefined') {
+    return new Promise((resolve, reject) => {
+      const method = (options.method || 'GET').toUpperCase();
+      const req = { url: options.url, headers: options.headers || {} };
+      if (options.body) req.body = options.body;
+      const sender = method === 'POST' ? $httpClient.post : $httpClient.get;
+      sender(req, (error, response, body) => {
+        if (error) return reject(typeof error === 'string' ? { error } : error);
+        resolve({
+          statusCode: response && (response.status || response.statusCode),
+          status: response && (response.status || response.statusCode),
+          headers: response && response.headers,
+          body
+        });
+      });
+    });
+  }
+  return Promise.reject(new Error('No supported HTTP client found'));
+}
+
+function done(value) {
+  if (typeof $done !== 'undefined') $done(value || {});
+}
+
+function notify(title, body) {
+  if (typeof $notify !== 'undefined') return $notify(scriptName, title, body);
+  if (typeof $notification !== 'undefined' && $notification && typeof $notification.post === 'function') {
+    return $notification.post(scriptName, title, body);
+  }
+  console.log(`${scriptName} ${title} ${body}`);
+}
+
 function MD5(string) {
   function RotateLeft(lValue, iShiftBits) { return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits)); }
   function AddUnsigned(lX, lY) {
@@ -131,8 +180,6 @@ function safeDecode(v) {
   try { return decodeURIComponent(String(v)); } catch (e) { return String(v); }
 }
 
-// 账号唯一键：以邮箱为准（小写 + 去空白 + url 解码）。
-// 抓不到邮箱时回退到旧 fingerprint，避免存储破碎。
 function emailKeyOf(paramsRaw) {
   const raw = (paramsRaw || {}).email;
   if (!raw) return '';
@@ -147,7 +194,6 @@ function fingerprintOf(paramsRaw) {
   return 'fp_' + MD5(base).slice(0, 12);
 }
 
-// 兼容老版本：把以 MD5 fingerprint 为 key 的账号迁移成以 email 为 key。
 function migrateStore(store) {
   if (!store || !store.accounts) return store;
   const newAccounts = {};
@@ -159,7 +205,6 @@ function migrateStore(store) {
     const email = emailKeyOf(acc.capture && acc.capture.paramsRaw);
     const newId = email || oldId;
     if (newId !== oldId) migrated = true;
-    // 后到的同邮箱覆盖（用更新的 capture）
     const prev = newAccounts[newId];
     if (!prev || (acc.updatedAt || 0) >= (prev.updatedAt || 0)) {
       newAccounts[newId] = Object.assign({}, acc, { id: newId, alias: acc.alias || email || newId });
@@ -174,7 +219,7 @@ function migrateStore(store) {
 }
 
 function loadStore() {
-  const raw = $prefs.valueForKey(storeKey);
+  const raw = storage.get(storeKey);
   if (!raw) return { version: 2, accounts: {}, order: [] };
   try {
     const obj = JSON.parse(raw);
@@ -187,7 +232,7 @@ function loadStore() {
 }
 
 function saveStore(store) {
-  $prefs.setValueForKey(JSON.stringify(store), storeKey);
+  storage.set(storeKey, JSON.stringify(store));
 }
 
 function pickItem(arr, seed) {
@@ -264,10 +309,6 @@ function buildHeaders(capture, ua) {
   return headers;
 }
 
-function notify(title, body) {
-  $notify(scriptName, title, body);
-}
-
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
@@ -282,7 +323,7 @@ function runAccount(acc, index, total) {
   function fetchApi(path, useFakeId, retry) {
     retry = (retry === undefined) ? 3 : retry;
     const overrideId = useFakeId ? fakeDeviceId : null;
-    return $task.fetch({ url: buildUrl(path, acc.capture, overrideId), method: 'GET', headers }).catch(err => {
+    return httpFetch({ url: buildUrl(path, acc.capture, overrideId), method: 'GET', headers }).catch(err => {
       const m = (err && (err.error || String(err))) || '';
       if (retry > 0 && /SSL|SSLSessionState|timeout|timed out|reset|connection|network|stream closed|closed|EOF/i.test(m)) {
         return new Promise(r => setTimeout(r, 1200)).then(() => fetchApi(path, useFakeId, retry - 1));
@@ -357,10 +398,10 @@ if (typeof $request !== 'undefined' && $request) {
   const email = emailKeyOf(paramsRaw);
   if (!email) {
     notify('⚠️ 抓取失败', '请求里未取到 email 参数，无法识别账号。请确认已登录后再触发抓包。');
-    $done({});
+    done({});
   } else {
     const store = loadStore();
-    const accId = email; // 以邮箱作为账号唯一标识
+    const accId = email;
     const now = Date.now();
     const existed = !!store.accounts[accId];
     const uaSeed = existed ? store.accounts[accId].uaSeed : store.order.length;
@@ -382,14 +423,14 @@ if (typeof $request !== 'undefined' && $request) {
     const total = store.order.length;
     notify(existed ? '🔄 账号参数已更新' : '✅ 新账号已入库', `${email}\n当前账号总数：${total}`);
     console.log(`【${scriptName}】${existed ? 'update' : 'add'} account ${email}\n${JSON.stringify(store.accounts[accId], null, 2)}`);
-    $done({});
+    done({});
   }
 } else {
   const store = loadStore();
   const ids = store.order.filter(id => store.accounts[id]);
   if (!ids.length) {
     notify('⚠️ 未抓到任何账号', '请先打开 WeTalk 触发抓包');
-    $done();
+    done();
   } else {
     const total = ids.length;
     const results = [];
@@ -401,10 +442,10 @@ if (typeof $request !== 'undefined' && $request) {
     });
     chain.then(() => {
       notify(`🎉 全部完成 (${total}个账号)`, results.join('\n———\n'));
-      $done();
+      done();
     }).catch(err => {
       notify('❌ 任务异常', results.join('\n———\n') + '\n' + (err.error || String(err)));
-      $done();
+      done();
     });
   }
 }
