@@ -346,7 +346,7 @@ function runAccount(acc, index, total) {
                 msgs.push(`🎬 视频${i}：+${d.result?.bonus || '?'} Coins`);
                 resolve(next());
               } else {
-                msgs.push(`⏸ 视频${i}：${d.retmsg}`);
+                msgs.push(`⏸ 视频${i} [retcode=${d.retcode ?? '?'}]：${d.retmsg || '未返回错误信息'}`);
                 resolve();
               }
             } catch (e) {
