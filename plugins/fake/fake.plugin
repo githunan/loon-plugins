@@ -1,0 +1,7 @@
+#!name=Fake 规则集
+#!desc=镜像 chxm1023/Script_X 的 Fake.list，供 Loon 直接引用。
+#!author=chxm1023 / mirrored by githunan
+#!homepage=https://github.com/githunan/loon-plugins
+
+[Rule]
+RULE-SET,https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstream/Fake.list
