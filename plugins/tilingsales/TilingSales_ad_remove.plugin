@@ -6,6 +6,7 @@
 #!icon=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/assets/icon.jpg
 
 [Rewrite]
+^https?:\/\/(api|sdapi|apinew|gzapi|jk)\..+\.com\/App\/([Aa]d\/(barsIndexAdInfo|splashInfo|vajraInfo|config|activityInfo|skitAdInfo)|IndexList\/homeFloatAd|Resource\/CommentAd) reject-dict
 ^https?:\/\/[\w.-]+\/App\/Ad\/splashInfo reject-dict
 ^https?:\/\/[\w.-]+\/App\/Ad\/noticeInfo reject-dict
 ^https?:\/\/[\w.-]+\/App\/IndexList\/homeFloatAd reject-dict
@@ -33,4 +34,4 @@ http-response ^https?:\/\/[\w.-]+\/App\/Resource\/Vod\/showOne script-path=https
 http-response ^https?:\/\/[\w.-]+\/App\/Resource\/Vod\/vurlDetail script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/js/TilingSales_getNav.js, requires-body=true, timeout=60, tag=瓜子影视净化, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/assets/icon.jpg
 
 [MITM]
-hostname = apinew.n3yje.icu, apinew.8hpt2duq.com, apinew.fzmfbdmg.com, api.7gmsut2m.com, api.gq89em.com
+hostname = apinew.n3yje.icu, apinew.8hpt2duq.com, apinew.fzmfbdmg.com, sdapi.s3432pr.com, api.8b42w67.com, api.4pmyvfz.com, api.1000gxf.com, api.ainitpz.com, api.5fcgcnn.com, api.hpdgjnf.com, api.wyw68fg.com, api.hpfcqfh.com, api.dzjxekd.com, api.qxutcee.com, api.fkkejucm.com, api.sh75d6qk.com, api.gq89em.com, api.chgjaq4.com, api.cbvbqtz.com, api.gdj2a3qy.com, api.7gmsut2m.com, api.4hnovel.com, gzapi.*.com, jk.*.com
