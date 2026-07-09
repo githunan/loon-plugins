@@ -64,4 +64,38 @@ curl -fsSL -o plugins/wetalk/upstream/WeTalk.js https://raw.githubusercontent.co
 curl -fsSL -o plugins/wetalk/assets/WeTalk.jpg https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f0/47/0f/f0470f52-953c-6d67-ad8e-20af53a3afa4/AppIcon-WeTalk-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/512x512bb.jpg
 
 curl -A 'Mozilla/5.0' -fsSL -o plugins/fake/upstream/Fake.list https://raw.githubusercontent.com/chxm1023/Script_X/refs/heads/main/filter/Fake.list
-cp plugins/fake/upstream/Fake.list plugins/fake/upstream/guazi-direct-rules.list
+python3 - <<'PY2'
+from pathlib import Path
+src = Path('plugins/fake/upstream/Fake.list')
+out = Path('plugins/fake/upstream/guazi-direct-rules.list')
+lines = src.read_text().splitlines()
+new = ['# 瓜子影视直连规则', '# Synced from chxm1023/Script_X/filter/Fake.list', '']
+for line in lines:
+    s = line.strip()
+    if not s or s.startswith('#'):
+        continue
+    parts = [p.strip() for p in s.split(',')]
+    if len(parts) < 3:
+        continue
+    kind, value, policy = parts[0], parts[1], parts[2]
+    kl = kind.lower()
+    pol = policy.upper()
+    if kl == 'host':
+        new.append(f'DOMAIN,{value},{pol}')
+    elif kl == 'host-suffix':
+        new.append(f'DOMAIN-SUFFIX,{value},{pol}')
+    elif kl == 'host-keyword':
+        cleaned = value.replace('*.', '').replace('.*', '').replace('*', '').replace('.com', '').strip('.')
+        if cleaned:
+            new.append(f'DOMAIN-KEYWORD,{cleaned},{pol}')
+    elif kl == 'ip-cidr':
+        new.append(f'IP-CIDR,{value},{pol}')
+seen = set()
+result = []
+for line in new:
+    if line in seen:
+        continue
+    seen.add(line)
+    result.append(line)
+out.write_text('\n'.join(result) + '\n')
+PY2

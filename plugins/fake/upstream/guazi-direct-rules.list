@@ -1,26 +1,28 @@
-# 瓜子影视
-host, images.67c6c7a.com, DIRECT
-host, images.jjawa.com, DIRECT
-host, www.emw5es6.com, DIRECT
-host, sdapi.s3432pr.com, DIRECT
-host, apinew.8hpt2duq.com, DIRECT
-host, api.8b42w67.com, DIRECT
-host, api.4pmyvfz.com, DIRECT
-host, api.1000gxf.com, DIRECT
-host, api.ainitpz.com, DIRECT
-host, api.5fcgcnn.com, DIRECT
-host, api.hpdgjnf.com, DIRECT
-host, api.wyw68fg.com, DIRECT
-host, api.hpfcqfh.com, DIRECT
-host, api.dzjxekd.com, DIRECT
-host, api.qxutcee.com, DIRECT
-host, api.fkkejucm.com, DIRECT
-host, api.sh75d6qk.com, DIRECT
-host, api.gq89em.com, DIRECT
-host, api.chgjaq4.com, DIRECT
-host, api.cbvbqtz.com, DIRECT
-host, api.gdj2a3qy.com, DIRECT
-host, api.7gmsut2m.com, DIRECT
-host, api.4hnovel.com, DIRECT
-host-KEYWORD, gzapi.*.com,DIRECT
-host-KEYWORD, jk.*.com, DIRECT
+# 瓜子影视直连规则
+# Synced from chxm1023/Script_X/filter/Fake.list
+
+DOMAIN,images.67c6c7a.com,DIRECT
+DOMAIN,images.jjawa.com,DIRECT
+DOMAIN,www.emw5es6.com,DIRECT
+DOMAIN,sdapi.s3432pr.com,DIRECT
+DOMAIN,apinew.8hpt2duq.com,DIRECT
+DOMAIN,api.8b42w67.com,DIRECT
+DOMAIN,api.4pmyvfz.com,DIRECT
+DOMAIN,api.1000gxf.com,DIRECT
+DOMAIN,api.ainitpz.com,DIRECT
+DOMAIN,api.5fcgcnn.com,DIRECT
+DOMAIN,api.hpdgjnf.com,DIRECT
+DOMAIN,api.wyw68fg.com,DIRECT
+DOMAIN,api.hpfcqfh.com,DIRECT
+DOMAIN,api.dzjxekd.com,DIRECT
+DOMAIN,api.qxutcee.com,DIRECT
+DOMAIN,api.fkkejucm.com,DIRECT
+DOMAIN,api.sh75d6qk.com,DIRECT
+DOMAIN,api.gq89em.com,DIRECT
+DOMAIN,api.chgjaq4.com,DIRECT
+DOMAIN,api.cbvbqtz.com,DIRECT
+DOMAIN,api.gdj2a3qy.com,DIRECT
+DOMAIN,api.7gmsut2m.com,DIRECT
+DOMAIN,api.4hnovel.com,DIRECT
+DOMAIN-KEYWORD,gzapi,DIRECT
+DOMAIN-KEYWORD,jk,DIRECT
