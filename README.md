@@ -46,6 +46,12 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/pingme/ping
 https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/wetalk/wetalk.plugin
 ```
 
+### 瓜子影视直连规则
+
+```text
+https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstream/guazi-direct-rules.list
+```
+
 ## 自动同步
 
 `.github/workflows/sync-plugins.yml` 每天自动同步上游脚本和规则。
@@ -59,5 +65,6 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/wetalk/weta
 - 追觅每日签到：`MaYIHEI/paperclip`、`MaYIHEI/pin`
 - PingMe签到：`fmz200/wool_scripts`
 - WeTalk签到：`ZenmoFeiShi/Qx`
+- 瓜子影视直连规则：`chxm1023/Script_X`
 
 如果上游更新，仓库会自动提交变化；Loon 里添加的 raw 链接保持不变.

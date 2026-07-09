@@ -64,3 +64,4 @@ curl -fsSL -o plugins/wetalk/upstream/WeTalk.js https://raw.githubusercontent.co
 curl -fsSL -o plugins/wetalk/assets/WeTalk.jpg https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f0/47/0f/f0470f52-953c-6d67-ad8e-20af53a3afa4/AppIcon-WeTalk-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/512x512bb.jpg
 
 curl -A 'Mozilla/5.0' -fsSL -o plugins/fake/upstream/Fake.list https://raw.githubusercontent.com/chxm1023/Script_X/refs/heads/main/filter/Fake.list
+cp plugins/fake/upstream/Fake.list plugins/fake/upstream/guazi-direct-rules.list
