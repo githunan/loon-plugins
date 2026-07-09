@@ -16,6 +16,8 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/wps-office/
 https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/TilingSales_ad_remove.plugin
 ```
 
+来源已切换为 `chxm1023/Advertising/Loon/AppAD.plugin` 中的瓜子影视相关规则自动提取。
+
 ### 咪咕视频解锁会员
 
 ```text
@@ -59,7 +61,7 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstre
 当前同步来源：
 
 - WPS Office：`MaYIHEI/paperclip`、`MaYIHEI/pin`
-- 瓜子影视净化：`ZenmoFeiShi/Qx`
+- 瓜子影视净化：`chxm1023/Advertising`（从 `AppAD.plugin` 自动提取瓜子影视规则）
 - 咪咕视频解锁会员：`ZenmoFeiShi/Qx`
 - 芒果tv解锁会员：`ZenmoFeiShi/Qx`
 - 追觅每日签到：`MaYIHEI/paperclip`、`MaYIHEI/pin`
