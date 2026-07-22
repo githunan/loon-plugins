@@ -12,7 +12,8 @@ mkdir -p \
   plugins/dreame/assets \
   plugins/pingme/scripts plugins/pingme/assets \
   plugins/wetalk/upstream plugins/wetalk/scripts plugins/wetalk/assets \
-  plugins/fake/upstream
+  plugins/fake/upstream \
+  plugins/douyin/upstream
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -99,3 +100,35 @@ for line in new:
     result.append(line)
 out.write_text('\n'.join(result) + '\n')
 PY2
+
+curl -fsSL -o plugins/douyin/upstream/DouYin.list https://raw.githubusercontent.com/Semporia/Quantumult-X/master/Filter/DouYin.list
+python3 - <<'PY3'
+from pathlib import Path
+
+src = Path('plugins/douyin/upstream/DouYin.list')
+out = Path('plugins/douyin/DouYin.list')
+type_map = {
+    'HOST': 'DOMAIN',
+    'HOST-SUFFIX': 'DOMAIN-SUFFIX',
+    'HOST-KEYWORD': 'DOMAIN-KEYWORD',
+}
+new = ['# NAME: DouYin', '# Synced from Semporia/Quantumult-X/Filter/DouYin.list', '']
+for line in src.read_text().splitlines():
+    s = line.strip()
+    if not s or s.startswith('#'):
+        continue
+    parts = [p.strip() for p in s.split(',')]
+    if len(parts) < 3:
+        continue
+    kind, value, policy = parts[0].upper(), parts[1], parts[2]
+    loon_kind = type_map.get(kind, kind)
+    new.append(f'{loon_kind},{value},{policy}')
+seen = set()
+result = []
+for line in new:
+    if line in seen:
+        continue
+    seen.add(line)
+    result.append(line)
+out.write_text('\n'.join(result) + '\n')
+PY3

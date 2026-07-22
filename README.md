@@ -54,6 +54,12 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/wetalk/weta
 https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstream/guazi-direct-rules.list
 ```
 
+### 抖音分流规则
+
+```text
+https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/douyin/DouYin.list
+```
+
 ## 同步说明
 
 `.github/workflows/sync-plugins.yml` 会定时同步上游内容；现有 raw 链接保持不变。
@@ -68,3 +74,4 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstre
 - PingMe 任务：`fmz200/wool_scripts`
 - WeTalk 任务：`ZenmoFeiShi/Qx`
 - 瓜子影视直连规则：`chxm1023/Script_X`
+- 抖音分流规则：`Semporia/Quantumult-X`
