@@ -1,7 +1,7 @@
 #!name=瓜子影视净化
 #!desc=由 Quantumult X snippet 自动转换为 Loon 插件，自动同步上游更新。
 #!author=怎么肥事
-#!update=2026-06-21
+#!update=2026-08-11
 #!homepage=https://github.com/githunan/loon-plugins
 #!icon=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/assets/icon.jpg
 
@@ -33,4 +33,4 @@ http-response ^https?:\/\/[\w.-]+\/App\/Resource\/Vod\/showOne script-path=https
 http-response ^https?:\/\/[\w.-]+\/App\/Resource\/Vod\/vurlDetail script-path=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/js/TilingSales_getNav.js, requires-body=true, timeout=60, tag=瓜子影视净化, img-url=https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/tilingsales/assets/icon.jpg
 
 [MITM]
-hostname = apinew.n3yje.icu, apinew.8hpt2duq.com, apinew.fzmfbdmg.com, api.7gmsut2m.com, api.gq89em.com
+hostname = api.mxtxqe.com, api.sef5w7.com, sdapi.u4gdp3.com, sdapi.4zu76s.com, sdapi.re3k7n.com, api.xqe4cxu.com, api.syq8gvw.com, api.zjypp7x.com, apinew.n3yje.icu, apinew.8hpt2duq.com, apinew.fzmfbdmg.com, api.7gmsut2m.com, api.gq89em.com
