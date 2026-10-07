@@ -60,6 +60,14 @@ https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/fake/upstre
 https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/douyin/DouYin.list
 ```
 
+### 酷我音乐签到
+
+```text
+https://raw.githubusercontent.com/githunan/loon-plugins/main/plugins/kuwo/kuwo.plugin
+```
+
+脚本接口写死在 `plugins/kuwo/scripts/kuwotask.js`，直接请求酷我 `integralapi.kuwo.cn`。上游 `ios151/Rewrite` 不实时下发接口。
+
 ## 同步说明
 
 `.github/workflows/sync-plugins.yml` 会定时同步上游内容；现有 raw 链接保持不变。
