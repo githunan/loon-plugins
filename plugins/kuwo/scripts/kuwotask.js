@@ -25,7 +25,7 @@ hostname = *.kuwo.cn，360.com
 
 const $ = new Env("酷我音乐");
 const ARGS = (() => {
-    let args = { phone: "", ocr: "", notify: "1" };
+    let args = { phone: "", ocr: "", notify: "1", exchange: "1" };
     let input = null;
 
     if (typeof $argument !== "undefined") {
@@ -41,16 +41,21 @@ const ARGS = (() => {
             args.phone = input[0];
             args.ocr = input[1] || "";
             args.notify = input[2] !== undefined ? input[2] : "1";
+            args.exchange = input[3] !== undefined ? input[3] : "1";
         } else {
             args.phone = input.phone || input.sj || "";
             args.ocr = input.ocr || "";
             if (input.notify !== undefined) {
                 args.notify = (input.notify === true || input.notify === "true" || input.notify === "1" || input.notify === 1) ? "1" : "0";
             }
+            if (input.exchange !== undefined) {
+                args.exchange = (input.exchange === true || input.exchange === "true" || input.exchange === "1" || input.exchange === 1) ? "1" : "0";
+            }
         }
         args.phone = String(args.phone || "");
         args.ocr = String(args.ocr || "");
         args.notify = String(args.notify || "1");
+        args.exchange = (args.exchange === true || args.exchange === "true" || args.exchange === "1" || args.exchange === 1) ? "1" : "0";
         return args;
     }
 
@@ -64,12 +69,16 @@ const ARGS = (() => {
         if (args.notify) {
             args.notify = (args.notify === "true" || args.notify === "1") ? "1" : "0";
         }
+        args.exchange = (args.exchange === "true" || args.exchange === "1") ? "1" : "0";
     } else if (str.includes(",")) {
         let arr = str.split(",");
         args.phone = arr[0].trim();
         args.ocr = (arr[1] || "").trim();
         if (arr[2] !== undefined) {
             args.notify = (arr[2].trim() === "true" || arr[2].trim() === "1") ? "1" : "0";
+        }
+        if (arr[3] !== undefined) {
+            args.exchange = (arr[3].trim() === "true" || arr[3].trim() === "1") ? "1" : "0";
         }
     } else {
         args.phone = str;
@@ -105,6 +114,7 @@ const BUSINESS_CONSTANTS = {
 console.log(`手机号: ${maskSensitiveInfo(ARGS.phone, 'phone')}`);
 console.log(`OCR 密钥: ${maskSensitiveInfo(ARGS.ocr, 'key')}`);
 console.log(`每次通知: ${ARGS.notify === "1" ? "开启" : "关闭(仅汇总)"}`);
+console.log(`兑换会员: ${ARGS.exchange === "1" ? "开启" : "关闭"}`);
 
 // 判断是否为最后一次运行（用于汇总通知）
 const isLastRun = (() => {
@@ -138,6 +148,7 @@ const CONFIG = {
     PH: ARGS.phone || "",
     OCR: ARGS.ocr || "",
     NOTIFY: ARGS.notify || "1",
+    EXCHANGE: ARGS.exchange === "1" ? "1" : "0",
     KEY: "cookie_kuwo_v2"
 };
 
@@ -891,6 +902,10 @@ async function BoxTask(ID) {
 async function Convert(ID) {
     const [uid, sid] = ID.split('@');
     let success = false;
+    if (CONFIG.EXCHANGE !== "1") {
+        $.log("会员兑换: 已关闭");
+        return success;
+    }
     const url = `https://integralapi.kuwo.cn/api/v1/online/sign/getExchangeAward?loginUid=${uid}&loginSid=${sid}&platform=ios&source=kwplayer_ip_11.1.0.0_TJ.ipa&version=11.1.0.0&quotaId=13&exchangeType=vip`;
     await $.http.get({ url, headers: kw_headers }).then(resp => {
         try {

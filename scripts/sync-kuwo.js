@@ -38,10 +38,82 @@ function exchangeQuery(text) {
     .replace(/\$\{loginSid\}/g, '${sid}');
 }
 
+function once(text, from, to) {
+  const found = text.indexOf(from);
+  if (found < 0 || text.indexOf(from, found + from.length) !== -1) return null;
+  return text.replace(from, to);
+}
+
+function enableExchangeSwitch(text) {
+  const steps = [
+    [
+      'let args = { phone: "", ocr: "", notify: "1" };',
+      'let args = { phone: "", ocr: "", notify: "1", exchange: "1" };',
+    ],
+    [
+      'args.notify = input[2] !== undefined ? input[2] : "1";',
+      'args.notify = input[2] !== undefined ? input[2] : "1";\n            args.exchange = input[3] !== undefined ? input[3] : "1";',
+    ],
+    [
+      `            if (input.notify !== undefined) {
+                args.notify = (input.notify === true || input.notify === "true" || input.notify === "1" || input.notify === 1) ? "1" : "0";
+            }`,
+      `            if (input.notify !== undefined) {
+                args.notify = (input.notify === true || input.notify === "true" || input.notify === "1" || input.notify === 1) ? "1" : "0";
+            }
+            if (input.exchange !== undefined) {
+                args.exchange = (input.exchange === true || input.exchange === "true" || input.exchange === "1" || input.exchange === 1) ? "1" : "0";
+            }`,
+    ],
+    [
+      '        args.notify = String(args.notify || "1");\n        return args;',
+      '        args.notify = String(args.notify || "1");\n        args.exchange = (args.exchange === true || args.exchange === "true" || args.exchange === "1" || args.exchange === 1) ? "1" : "0";\n        return args;',
+    ],
+    [
+      `        if (args.notify) {
+            args.notify = (args.notify === "true" || args.notify === "1") ? "1" : "0";
+        }`,
+      `        if (args.notify) {
+            args.notify = (args.notify === "true" || args.notify === "1") ? "1" : "0";
+        }
+        args.exchange = (args.exchange === "true" || args.exchange === "1") ? "1" : "0";`,
+    ],
+    [
+      `        if (arr[2] !== undefined) {
+            args.notify = (arr[2].trim() === "true" || arr[2].trim() === "1") ? "1" : "0";
+        }`,
+      `        if (arr[2] !== undefined) {
+            args.notify = (arr[2].trim() === "true" || arr[2].trim() === "1") ? "1" : "0";
+        }
+        if (arr[3] !== undefined) {
+            args.exchange = (arr[3].trim() === "true" || arr[3].trim() === "1") ? "1" : "0";
+        }`,
+    ],
+    [
+      '    NOTIFY: ARGS.notify || "1",\n    KEY: "cookie_kuwo_v2"',
+      '    NOTIFY: ARGS.notify || "1",\n    EXCHANGE: ARGS.exchange === "1" ? "1" : "0",\n    KEY: "cookie_kuwo_v2"',
+    ],
+    [
+      'console.log(`每次通知: ${ARGS.notify === "1" ? "开启" : "关闭(仅汇总)"}`);',
+      'console.log(`每次通知: ${ARGS.notify === "1" ? "开启" : "关闭(仅汇总)"}`);\nconsole.log(`兑换会员: ${ARGS.exchange === "1" ? "开启" : "关闭"}`);',
+    ],
+  ];
+  let next = text;
+  for (const [from, to] of steps) {
+    next = once(next, from, to);
+    if (!next) return null;
+  }
+  return next;
+}
+
 function convertFunction(query) {
   return `async function Convert(ID) {
     const [uid, sid] = ID.split('@');
     let success = false;
+    if (CONFIG.EXCHANGE !== "1") {
+        $.log("会员兑换: 已关闭");
+        return success;
+    }
     const url = \`https://integralapi.kuwo.cn/api/v1/online/sign/${query}\`;
     await $.http.get({ url, headers: kw_headers }).then(resp => {
         try {
@@ -95,7 +167,9 @@ function rewriteScript(upstreamText, query) {
     /https:\/\/raw\.githubusercontent\.com\/ios151\/Rewrite\/\S*?\/kuwotask\.js/g,
     TASK_URL
   );
-  return replaceConvert(rewritten, query);
+  const withSwitch = enableExchangeSwitch(rewritten);
+  if (!withSwitch) return null;
+  return replaceConvert(withSwitch, query);
 }
 
 function argValue(name) {
@@ -134,7 +208,7 @@ if (mode === '--apply') {
   }
 
   const next = rewriteScript(upstreamText, query);
-  if (!next || !next.includes('platform=ios') || !next.includes(TASK_URL)) {
+  if (!next || !next.includes('platform=ios') || !next.includes(TASK_URL) || !next.includes('CONFIG.EXCHANGE') || !next.includes('会员兑换: 已关闭')) {
     console.error('Kuwo exchange patch did not apply; leaving the local script in place.');
     process.exit(1);
   }
