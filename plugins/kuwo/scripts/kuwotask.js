@@ -891,18 +891,39 @@ async function BoxTask(ID) {
 async function Convert(ID) {
     const [uid, sid] = ID.split('@');
     let success = false;
-    await $.http.get({ url: `https://integralapi.kuwo.cn/api/v1/online/sign/getExchangeAward?loginUid=${uid}&loginSid=${sid}&quotaId=13&exchangeType=vip`, headers: kw_headers }).then(resp => {
+    const url = `https://integralapi.kuwo.cn/api/v1/online/sign/getExchangeAward?loginUid=${uid}&loginSid=${sid}&platform=ios&source=kwplayer_ip_11.1.0.0_TJ.ipa&version=11.1.0.0&quotaId=13&exchangeType=vip`;
+    await $.http.get({ url, headers: kw_headers }).then(resp => {
         try {
+            $.log("🟡正在执行会员兑换任务...");
             const o = JSON.parse(resp.body);
-            if (o.code === 200) {
-                success = true;
-                $.log(`    > 兑换: ${o.data.description}`);
+            let desc;
+            if (o.code === 200 && o.msg === "success" && o.success === true) {
+                desc = o.data.description;
+                if (desc === "成功") {
+                    success = true;
+                    desc = `🎉会员兑换: ${desc}`;
+                } else if (desc === "您的余额不足，继续做任务赚金币吧") {
+                    desc = `🔴会员兑换: ${desc}`;
+                } else if (desc === "用户未登录") {
+                    desc = `🔴会员兑换: ${desc}`;
+                } else {
+                    desc = `⚠️会员兑换: ${desc}`;
+                }
+            } else {
+                desc = `❌会员兑换: 错误!`;
+                $.log(resp.body);
             }
+            $.log(desc);
+            notifyMsg.push(desc);
         } catch (e) {
-            $.log(`    > 兑换解析失败: ${e.message}`);
+            const desc = `❌会员兑换: 解析失败 ${e.message}`;
+            $.log(desc);
+            notifyMsg.push(desc);
         }
     }).catch(err => {
-        $.log(`    > 兑换请求失败: ${err.message}`);
+        const desc = `❌会员兑换: 请求失败 ${err.message}`;
+        $.log(desc);
+        notifyMsg.push(desc);
     });
     return success;
 }

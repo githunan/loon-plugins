@@ -13,7 +13,8 @@ mkdir -p \
   plugins/pingme/scripts plugins/pingme/assets \
   plugins/wetalk/upstream plugins/wetalk/scripts plugins/wetalk/assets \
   plugins/fake/upstream \
-  plugins/douyin/upstream
+  plugins/douyin/upstream \
+  plugins/kuwo/upstream plugins/kuwo/scripts
 
 curl -fsSL -o plugins/wps-office/app/wps/wps.cookie.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.cookie.js
 curl -fsSL -o plugins/wps-office/app/wps/wps.js https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js
@@ -62,7 +63,16 @@ curl -fsSL -o plugins/pingme/assets/PingMe.png https://raw.githubusercontent.com
 # WeTalk upstream remains QX-only. Keep a mirrored copy for reference, but preserve the
 # maintained Loon-compatible script in plugins/wetalk/scripts/WeTalk.js.
 curl -fsSL -o plugins/wetalk/upstream/WeTalk.js https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/WeTalk.js
-curl -fsSL -o plugins/wetalk/assets/WeTalk.jpg https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f0/47/0f/f0470f52-953c-6d67-ad8e-20af53a3afa4/AppIcon-WeTalk-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/512x512bb.jpg
+# Apple's icon CDN has timed out for 300s and aborted the whole sync.
+# Keep the icon already in the repo when that happens.
+wetalk_icon=$(mktemp)
+if curl -fsSL --connect-timeout 20 --max-time 60 -o "$wetalk_icon" \
+  https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f0/47/0f/f0470f52-953c-6d67-ad8e-20af53a3afa4/AppIcon-WeTalk-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/512x512bb.jpg; then
+  mv "$wetalk_icon" plugins/wetalk/assets/WeTalk.jpg
+else
+  echo "WeTalk icon download failed; keeping the existing icon."
+  rm -f "$wetalk_icon"
+fi
 
 curl -A 'Mozilla/5.0' -fsSL -o plugins/fake/upstream/Fake.list https://raw.githubusercontent.com/chxm1023/Script_X/refs/heads/main/filter/Fake.list
 python3 - <<'PY2'
@@ -132,3 +142,41 @@ for line in new:
     result.append(line)
 out.write_text('\n'.join(result) + '\n')
 PY3
+
+# Sign-in script follows ios151. The exchange request is reapplied from
+# General74110 after each sync. A missing or unrelated upstream file leaves
+# the last local copy in place.
+kuwo_tmp=$(mktemp)
+if curl -fsSL -o "$kuwo_tmp" https://raw.githubusercontent.com/ios151/Rewrite/refs/heads/main/kuwotask.js \
+  && node scripts/sync-kuwo.js --accept-task "$kuwo_tmp"; then
+  mv "$kuwo_tmp" plugins/kuwo/upstream/kuwotask.js
+else
+  echo "Kuwo sign-in upstream unavailable or unrelated; keeping the local copy."
+  rm -f "$kuwo_tmp"
+fi
+
+general_tmp=$(mktemp)
+general_ok=0
+if curl -fsSL -o "$general_tmp" https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/kuwo.js \
+  && node scripts/sync-kuwo.js --accept-exchange "$general_tmp"; then
+  general_ok=1
+else
+  echo "Kuwo exchange upstream unavailable or unrelated; keeping the last exchange request."
+  rm -f "$general_tmp"
+fi
+
+if [[ -f plugins/kuwo/upstream/kuwotask.js ]]; then
+  if [[ "$general_ok" -eq 1 ]]; then
+    node scripts/sync-kuwo.js --apply \
+      --upstream plugins/kuwo/upstream/kuwotask.js \
+      --output plugins/kuwo/scripts/kuwotask.js \
+      --general "$general_tmp" \
+      || echo "Kuwo exchange patch did not apply; keeping the current script."
+  else
+    node scripts/sync-kuwo.js --apply \
+      --upstream plugins/kuwo/upstream/kuwotask.js \
+      --output plugins/kuwo/scripts/kuwotask.js \
+      || echo "Kuwo exchange patch did not apply; keeping the current script."
+  fi
+fi
+rm -f "$general_tmp"
